@@ -92,13 +92,22 @@ fun App() {
 @Composable
 fun GuessTextField() {
     var text by remember { mutableStateOf(TextFieldValue("")) }
-    val rnds by remember { mutableStateOf((0..1000).random()) }
+    var rnds by remember { mutableStateOf((0..1000).random()) }
     var count by remember { mutableStateOf(0) }
     var guessText by remember { mutableStateOf("") }
 
-    fun guess(number: Int) {
+    fun guess() {
+        if (text.text.isBlank()) {
+            guessText = ""
+            return
+        }
+        val number = text.text.toInt()
+
         if (number == rnds) {
-            guessText = "Congrats, you got it in $count tries."
+            guessText = "It's $rnds. Congrats, you got it in $count tries.\nClick to try again."
+            rnds = (0..1000).random()
+            count = 0
+            text = TextFieldValue("")
             return
         }
 
@@ -121,10 +130,10 @@ fun GuessTextField() {
         keyboardOptions = KeyboardOptions.Default.copy(
             keyboardType = KeyboardType.NumberPassword
         ),
-
+        singleLine = true
         )
-    Text(guessText)
-    Button(onClick = { guess(text.text.toInt()) }) {
+    Text(guessText, textAlign = TextAlign.Center)
+    Button(onClick = { guess() }) {
         Text("Play Again")
     }
 }
