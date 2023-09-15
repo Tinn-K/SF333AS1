@@ -109,7 +109,6 @@ fun GuessTextField() {
         }
 
         count++
-        guessText = ""
     }
 
     TextField(
