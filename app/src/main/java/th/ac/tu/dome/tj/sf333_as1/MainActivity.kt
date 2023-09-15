@@ -95,19 +95,27 @@ fun GuessTextField() {
     var rnds by remember { mutableStateOf((0..1000).random()) }
     var count by remember { mutableStateOf(0) }
     var guessText by remember { mutableStateOf("") }
+    var guessed by remember { mutableStateOf(true) }
 
     fun guess() {
         if (text.text.isBlank()) {
-            guessText = ""
             return
         }
+
         val number = text.text.toInt()
 
-        if (number == rnds) {
-            guessText = "It's $rnds. Congrats, you got it in $count tries.\nClick to try again."
+        if (!guessed && rnds == number) {
             rnds = (0..1000).random()
             count = 0
             text = TextFieldValue("")
+            guessText = ""
+            guessed = true
+            return
+        }
+
+        if (number == rnds) {
+            guessText = "Congrats, you got it in $count tries.\nClick to try again."
+            guessed = false
             return
         }
 
@@ -130,7 +138,8 @@ fun GuessTextField() {
         keyboardOptions = KeyboardOptions.Default.copy(
             keyboardType = KeyboardType.NumberPassword
         ),
-        singleLine = true
+        singleLine = true,
+        enabled = guessed
         )
     Text(guessText, textAlign = TextAlign.Center)
     Button(onClick = { guess() }) {
